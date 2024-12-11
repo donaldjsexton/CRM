@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %}
+{% block content %}
+<h1>Tasks for Event</h1>
+<ul>
+    {% for task in tasks %}
+        <li>
+            {{ task.description }} - {{ task.due_date }}
+            {% if task.is_completed %}✔️{% else %}❌{% endif %}
+            <a href="{% url 'task_edit' task.pk %}">Edit</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'task_add' %}">Add Task</a>
+{% endblock %}
+</body>
+</html>

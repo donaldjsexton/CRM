@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-light vh-100" style="width: 250px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-light text-decoration-none">
+        <span class="fs-4">Dashboard</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="/dashboard/" class="nav-link text-light {% if request.path == '/dashboard/' %}active bg-secondary{% endif %}">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/calendar/" class="nav-link text-light {% if request.path == '/calendar/' %}active bg-secondary{% endif %}">
+                Calendar
+            </a>
+        </li>
+        {% if user.is_authenticated %}
+        <li>
+            <a href="/leads/" class="nav-link text-light {% if request.path == '/leads/' %}active bg-secondary{% endif %}">
+                Leads <span class="badge bg-danger ms-2">{{ leads_count }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="/events/" class="nav-link text-light {% if request.path == '/events/' %}active bg-secondary{% endif %}">
+                Events <span class="badge bg-info ms-2">{{ events_count }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="/email/" class="nav-link text-light {% if request.path == '/email/' %}active bg-secondary{% endif %}">
+                Email <span class="badge bg-success ms-2">{{ email_count }}</span>
+            </a>
+        </li>
+        {% endif %}
+        <li>
+            <a href="/tasks/" class="nav-link text-light {% if request.path == '/tasks/' %}active bg-secondary{% endif %}">
+                Tasks
+            </a>
+        </li>
+        <li>
+            <a href="/clients/" class="nav-link text-light {% if request.path == '/clients/' %}active bg-secondary{% endif %}">
+                Clients
+            </a>
+        </li>
+        <li>
+            <a href="/vendors/" class="nav-link text-light {% if request.path == '/vendors/' %}active bg-secondary{% endif %}">
+                Vendors
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-light text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://via.placeholder.com/32" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong>{{ user.username.title }}</strong>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
+            <li><a class="dropdown-item" href="/profile/">Profile</a></li>
+            <li><a class="dropdown-item" href="/settings/">Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+              {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                {% endif %}
+        </ul>
+    </div>
+</nav>
+
+</body>
+</html>

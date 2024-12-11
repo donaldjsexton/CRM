@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Vendor List</h1>
+{% if vendors %}
+<table>
+    <thead>
+        <tr>
+            <th>Vendor Name</th>
+            <th>Contact Email</th>
+            <th>Phone</th>
+            <th>Website</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vendor in vendors %}
+        <tr>
+            <td>{{ vendor.name }}</td>
+            <td>{{ vendor.contact_email }}</td>
+            <td>{{ vendor.phone_number }}</td>
+            <td><a href="{{ vendor.website }}" target="_blank">{{ vendor.website }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No vendors found.</p>
+{% endif %}
+{% endblock %}
+
+</body>
+</html>

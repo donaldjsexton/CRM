@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-9 p-4">
+            {% block content %}
+            {% if user.is_authenticated %}
+<h1>Welcome, {{ user.username.title }}</h1>
+<p>You have {{ leads_count }} leads, {{ events_count }} events, and {{ email_count }} unread emails.</p>
+{% else %}
+<h1>Welcome to the CRM</h1>
+<p>Please <a href="{% url 'home' %}">log in</a> to access your dashboard.</p>
+{% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

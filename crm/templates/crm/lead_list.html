@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% extends 'base.html' %}s
+</head>
+<body>
+{% block content %}
+<h1>Leads</h1>
+<ul>
+    {% for lead in leads %}
+    <li>{{ lead.first_name }} {{ lead.last_name }} - {{ lead.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+</body>
+</html>

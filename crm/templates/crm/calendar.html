@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+    <style>
+        /* Styling to make the calendar occupy 80% of the available space */
+        #calendar {
+            width: 80%; /* 80% of the available width */
+            height: 80vh; /* 80% of the viewport height */
+            margin: 0 auto; /* Center the calendar horizontally */
+            padding: 20px;
+        }
+
+        /* Prevent weird resizing on month navigation */
+        .fc-view-harness {
+            min-height: 80vh; /* Ensures a consistent height for views */
+        }
+    </style>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <h1 class="text-center">Event Calendar</h1>
+    <div id="calendar" class="shadow-sm rounded"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 'auto', // Adjusts the calendar height dynamically
+                contentHeight: 'auto', // Ensures proper height adjustment
+                aspectRatio: 2, // Makes the calendar wider (controls width-to-height ratio)
+                expandRows: true, // Prevents resizing when switching months
+            });
+            calendar.render();
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

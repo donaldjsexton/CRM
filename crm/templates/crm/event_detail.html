@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ event.name }}</h1>
+<p>Client: {{ event.client }}</p>
+<p>Date: {{ event.event_date }}</p>
+<p>Venue: {{ event.venue }}</p>
+<p>Description: {{ event.description }}</p>
+<p>Status: {{ event.status }}</p>
+<a href="{% url 'event_edit' event.pk %}" class="btn btn-warning">Edit</a>
+<form action="{% url 'event_delete' event.pk %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<a href="{% url 'event_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}
+<h2>Vendors</h2>
+<ul>
+    {% for vendor in event.vendors.all %}
+        <li>{{ vendor.name }} ({{ vendor.get_specialty_display }})</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_vendor_to_event' event.pk %}" class="btn btn-primary">Add Vendor</a>
+
+<h1>Remove Vendor from Event</h1>
+<p>Are you sure you want to remove {{ vendor.name }} from {{ event.name }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Remove</button>
+</form>
+
+<a href="{% url 'event_detail' event.pk %}" class="btn btn-secondary mt-3">Cancel</a>
+<a href="{% url 'assign_vendors_to_event' event.pk %}" class="btn btn-primary">Assign Vendors</a>
+
+
+</body>
+</html>

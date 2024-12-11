@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Vendor to Event</h1>
+<p>Event: {{ event.name }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Vendor</button>
+</form>
+
+<a href="{% url 'event_detail' event.pk %}" class="btn btn-secondary mt-3">Back to Event</a>
+{% endblock %}
+
+</body>
+</html>

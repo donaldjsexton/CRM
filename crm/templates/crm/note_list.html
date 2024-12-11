@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% extends 'base.html' %}
+<h1>Notes</h1>
+<ul>
+    {% for note in notes %}
+        <li>{{ note.created_at }} - {{ note.content }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'note_add' %}">Add Note</a>
+
+</body>
+</html>

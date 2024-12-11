@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #2C3E50;
+    color: #ECF0F1;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.sidebar ul li a {
+    color: #ECF0F1;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline;
+}
+
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #fff;
+    background-color: #495057 !important;
+}
+
+.nav-link:hover {
+    color: #f8f9fa;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.container-fluid {
+    margin-left: 250px; /* Matches sidebar width */
+}
+
+body {
+    background-color: #212529; /* Bootstrap dark background */
+    color: #f8f9fa; /* Bootstrap light text */
+}
+
+/* Add to your CSS file or inline */
+#calendar {
+    max-width: 100%;
+    height: 80vh; /* Adjust height to fit viewport */
+    margin: 0 auto; /* Center the calendar */
+    padding: 20px;
+    background-color: #f8f9fa; /* Light background for better visibility */
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode #calendar {
+    background-color: #343a40; /* Dark background */
+    color: #ffffff; /* White text */
+}
+
+.dark-mode .fc-toolbar-title {
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    #calendar {
+        height: 60vh;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    #calendar {
+        height: 50vh;
+        font-size: 12px;
+    }
+}

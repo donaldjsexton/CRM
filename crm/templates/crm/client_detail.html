@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ client.first_name }} {{ client.last_name }}</h1>
+<p>Email: {{ client.email }}</p>
+<p>Phone: {{ client.phone_number }}</p>
+
+<h2>Events</h2>
+<ul>
+    {% for event in events %}
+        <li>{{ event.name }} on {{ event.event_date }}</li>
+    {% endfor %}
+</ul>
+            {% endblock %}
+
+</body>
+</html>

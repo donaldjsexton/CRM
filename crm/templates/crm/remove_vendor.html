@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Remove Vendor from Event</h1>
+<p>Are you sure you want to remove {{ vendor.name }} from {{ event.name }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Remove</button>
+</form>
+
+<a href="{% url 'event_detail' event.pk %}" class="btn btn-secondary mt-3">Cancel</a>
+
+</body>
+</html>
