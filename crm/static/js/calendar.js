@@ -1,16 +1,19 @@
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
 
-let calendarEl = document.getElementById('calendar');
-let calendar = new Calendar(calendarEl, {
-  plugins: [ dayGridPlugin, timeGridPlugin, listPlugin ],
-  initialView: 'dayGridMonth',
-  headerToolbar: {
-    left: 'prev,next today',
-    center: 'title',
-    right: 'dayGridMonth,timeGridWeek,listWeek'
-  }
+document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid', 'timeGrid', 'interaction'],
+        initialView: 'dayGridMonth',
+        events: '/api/events/',  // Use the new URL
+        eventClick: function(info) {
+            alert('Event: ' + info.event.title);
+        },
+        selectable: true,
+        dateClick: function(info) {
+            alert('Selected date: ' + info.dateStr);
+        },
+    });
+
+    calendar.render();
 });
-calendar.render();

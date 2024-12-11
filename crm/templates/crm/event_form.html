@@ -6,12 +6,13 @@
 </head>
 <body>
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
+
 <h1>{% if form.instance.pk %}Edit Event{% else %}Add Event{% endif %}</h1>
-<form method="post">
+<form class="mb-3 " method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
 <a href="{% url 'event_list' %}" class="btn btn-secondary">Cancel</a>

@@ -56,20 +56,18 @@ def calendar_view(request):
     return render(request, 'crm/calendar.html')
 
 
-@csrf_exempt
-def events_api(request):
-    if request.method == 'GET':
-        events = Event.objects.all()
-        event_list = [
-            {
-                'id': str(event.id),
-                'title': event.name,
-                'start': event.event_date.isoformat(),
-                'description': event.description,
-            }
-            for event in events
-        ]
-        return JsonResponse(event_list, safe=False)
+def event_list_json(request):  # New name
+    events = Event.objects.all()
+    data = [
+        {
+            "id": event.id,
+            "title": event.name,
+            "start": event.start.isoformat(),
+            "end": event.end.isoformat(),
+        }
+        for event in events
+    ]
+    return JsonResponse(data, safe=False)
 
 
 class EventListAPIView(APIView):

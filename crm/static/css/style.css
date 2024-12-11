@@ -6,11 +6,18 @@ body {
 }
 
 .sidebar {
-    width: 250px;
-    background-color: #2C3E50;
-    color: #ECF0F1;
-    padding: 20px;
-    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px; /* Match the sidebar width in your template */
+    height: 100vh; /* Full viewport height */
+    z-index: 1000; /* Ensure correct stacking order */
+}
+
+/* Main content starts after the sidebar */
+.main-content {
+    margin-left: 250px; /* Matches the sidebar width */
+    padding: 20px; /* Add some padding */
 }
 
 .sidebar ul {

@@ -69,7 +69,7 @@ urlpatterns = [
 
     # Calendar
     path('calendar/', views.calendar_view, name='calendar'),
-    path('api/events/', views.events_api, name='events_api'),
+    path('api/events/', views.event_list_json, name='event-list-json'),
     path('api/events/list/', EventListAPIView.as_view(), name='api_events'),
 
     # Leads
