@@ -31,6 +31,16 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+Q_CLUSTER = {
+   'name': 'DjangORM',
+   'workers': 4,
+   'timeout': 90,
+   'retry': 120,
+   'queue_limit': 50,
+   'bulk': 10,
+   'orm': 'default',
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,7 +54,9 @@ INSTALLED_APPS = [
     'bootstrap5',
     'rest_framework',
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'appointment',
+    'django_q',
 ]
 
 MIDDLEWARE = [

@@ -1,4 +1,4 @@
-from django.urls import path, register_converter
+from django.urls import path, register_converter, include
 from . import views
 from .views import TaskListView, TaskCreateView, TaskUpdateView, NoteCreateView, NoteListView, EventListAPIView
 from uuid import UUID
@@ -69,8 +69,9 @@ urlpatterns = [
 
     # Calendar
     path('calendar/', views.calendar_view, name='calendar'),
-    path('api/events/', views.event_list_json, name='event-list-json'),
-    path('api/events/list/', EventListAPIView.as_view(), name='api_events'),
+    path('appointment/', include('appointment.urls')),
+    #path('api/events/', views.event_list_json, name='event-list-json'),
+    #path('api/events/list/', EventListAPIView.as_view(), name='api_events'),
 
     # Leads
     path('leads/', views.lead_list, name='lead_list'),
