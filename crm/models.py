@@ -1,7 +1,29 @@
+from __future__ import unicode_literals
 from django.db import models
 from django.core.exceptions import ValidationError
 import uuid
 from django.utils.timezone import now
+
+# Constants for choice fields
+EVENT_STATUS_CHOICES = [
+    ('planned', 'Planned'),
+    ('booked', 'Booked'),
+    ('completed', 'Completed'),
+    ('canceled', 'Canceled'),
+]
+
+LEAD_STATUS_CHOICES = [
+    ('new', 'New'),
+    ('contacted', 'Contacted'),
+    ('converted', 'Converted'),
+    ('closed', 'Closed'),
+]
+
+EMAIL_STATUS_CHOICES = [
+    ('draft', 'Draft'),
+    ('sent', 'Sent'),
+    ('failed', 'Failed'),
+]
 
 
 class Client(models.Model):
@@ -33,26 +55,20 @@ class Event(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='events')
     vendors = models.ManyToManyField(Vendor, blank=True, related_name='events')
     event_date = models.DateField()
-    start = models.DateTimeField()  # Start date and time
-    end = models.DateTimeField()  # End date and time
+    start = models.DateTimeField()
+    end = models.DateTimeField()
     venue = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    status = models.CharField(
-        max_length=50,
-        choices=[
-            ('planned', 'Planned'),
-            ('booked', 'Booked'),
-            ('completed', 'Completed'),
-            ('canceled', 'Canceled'),
-        ]
-    )
+    status = models.CharField(max_length=50, choices=EVENT_STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
         overlapping_events = Event.objects.filter(
             venue=self.venue,
-            event_date=self.event_date
+            event_date=self.event_date,
+            start__lt=self.end,
+            end__gt=self.start
         ).exclude(id=self.id)
         if overlapping_events.exists():
             raise ValidationError("An event is already booked at this venue on the selected date.")
@@ -101,16 +117,7 @@ class Lead(models.Model):
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     inquiry_date = models.DateField(auto_now_add=True)
-    status = models.CharField(
-        max_length=20,
-        choices=[
-            ('new', 'New'),
-            ('contacted', 'Contacted'),
-            ('converted', 'Converted'),
-            ('closed', 'Closed'),
-        ],
-        default='new'
-    )
+    status = models.CharField(max_length=20, choices=LEAD_STATUS_CHOICES, default='new')
     notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -124,15 +131,34 @@ class Email(models.Model):
     content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
-    status = models.CharField(
-        max_length=20,
-        choices=[
-            ('draft', 'Draft'),
-            ('sent', 'Sent'),
-            ('failed', 'Failed'),
-        ],
-        default='draft'
-    )
+    status = models.CharField(max_length=20, choices=EMAIL_STATUS_CHOICES, default='draft')
 
     def __str__(self):
         return f"Email from {self.sender} to {self.recipient} - {self.subject}"
+
+
+class Calendar(models.Model):
+    day = models.DateField("Day of the Event", help_text="Day of the event")
+    start_time = models.TimeField("Starting Time", help_text="Starting time")
+    end_time = models.TimeField("Ending Time", help_text="Ending time")
+    notes = models.TextField("Notes", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Schedule"
+        verbose_name_plural = "Schedules"
+
+    def clean(self):
+        if self.end_time <= self.start_time:
+            raise ValidationError("End time must be after start time.")
+
+        overlapping_events = Calendar.objects.filter(
+            day=self.day,
+            start_time__lt=self.end_time,
+            end_time__gt=self.start_time
+        ).exclude(id=self.id)
+
+        if overlapping_events.exists():
+            raise ValidationError("This event overlaps with another scheduled event.")
+
+    def __str__(self):
+        return f"Schedule on {self.day} from {self.start_time} to {self.end_time}"

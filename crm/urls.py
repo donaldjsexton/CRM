@@ -1,6 +1,6 @@
 from django.urls import path, register_converter, include
 from . import views
-from .views import TaskListView, TaskCreateView, TaskUpdateView, NoteCreateView, NoteListView, EventListAPIView
+from .views import TaskListView, TaskCreateView, TaskUpdateView, NoteCreateView, NoteListView, calendar_view
 from uuid import UUID
 
 # Constants for common path segments

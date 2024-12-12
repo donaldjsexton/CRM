@@ -12,6 +12,8 @@ from .models import Client, Event, Task, Note, Lead, Email, Vendor
 from .forms import ClientForm, EventForm, AddVendorToEventForm
 from .serializers import EventSerializer
 from uuid import UUID
+from datetime import datetime, timedelta
+from calendar import HTMLCalendar
 
 
 # Home Page (Login or Dashboard)
@@ -51,9 +53,54 @@ def logout_view(request):
     return redirect('home')
 
 
-# Calendar View
-def calendar_view(request):
-    return render(request, 'crm/calendar.html')
+def calendar(request):
+    # Get current date or query parameters for month/year
+    today = datetime.today()
+    month = request.GET.get('month', today.month)
+    year = request.GET.get('year', today.year)
+
+    month = int(month)
+    year = int(year)
+    current_date = datetime(year, month, 1)
+
+    # Get the first and last day of the month
+    first_day_of_month = current_date
+    last_day_of_month = datetime(year, month, calendar.monthrange(year, month)[1])
+
+    # Create calendar layout
+    calendar_days = []
+    start_of_week = first_day_of_month.weekday()  # Monday = 0, Sunday = 6
+    num_days = calendar.monthrange(year, month)[1]
+
+    # Days from the previous month
+    prev_month_days = [None] * start_of_week
+
+    # Days in the current month
+    current_month_days = [day for day in range(1, num_days + 1)]
+
+    # Days from the next month to fill out the week
+    next_month_days = [
+        None
+        for _ in range((7 - (len(prev_month_days) + len(current_month_days)) % 7) % 7)
+    ]
+
+    calendar_days = prev_month_days + current_month_days + next_month_days
+
+    # Chunk into weeks
+    weeks = [calendar_days[i: i + 7] for i in range(0, len(calendar_days), 7)]
+
+    # Calculate previous and next month
+    previous_month = current_date - timedelta(days=1)
+    next_month = current_date + timedelta(days=calendar.monthrange(year, month)[1])
+
+    context = {
+        'weeks': weeks,
+        'current_month': current_date.strftime('%B %Y'),
+        'previous_month': f"?month={previous_month.month}&year={previous_month.year}",
+        'next_month': f"?month={next_month.month}&year={next_month.year}",
+    }
+
+    return render(request, 'crm/calendar.html', context)
 
 
 def event_list_json(request):  # New name
