@@ -13,6 +13,7 @@ from .forms import ClientForm, EventForm, AddVendorToEventForm
 from .serializers import EventSerializer
 from uuid import UUID
 from datetime import datetime, timedelta
+import calendar
 from calendar import HTMLCalendar
 
 
@@ -53,7 +54,7 @@ def logout_view(request):
     return redirect('home')
 
 
-def calendar(request):
+def calendar_view(request):
     # Get current date or query parameters for month/year
     today = datetime.today()
     month = request.GET.get('month', today.month)
@@ -63,44 +64,51 @@ def calendar(request):
     year = int(year)
     current_date = datetime(year, month, 1)
 
-    # Get the first and last day of the month
+    # Generate all dates to display in the calendar
     first_day_of_month = current_date
     last_day_of_month = datetime(year, month, calendar.monthrange(year, month)[1])
 
-    # Create calendar layout
-    calendar_days = []
-    start_of_week = first_day_of_month.weekday()  # Monday = 0, Sunday = 6
-    num_days = calendar.monthrange(year, month)[1]
+    # Create a range to include surrounding days for the calendar grid
+    start_date = first_day_of_month - timedelta(days=first_day_of_month.weekday())  # Start from the previous Monday
+    end_date = last_day_of_month + timedelta(days=6 - last_day_of_month.weekday())  # End on the next Sunday
 
-    # Days from the previous month
-    prev_month_days = [None] * start_of_week
-
-    # Days in the current month
-    current_month_days = [day for day in range(1, num_days + 1)]
-
-    # Days from the next month to fill out the week
-    next_month_days = [
-        None
-        for _ in range((7 - (len(prev_month_days) + len(current_month_days)) % 7) % 7)
+    calendar_dates = [
+        start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1)
     ]
 
-    calendar_days = prev_month_days + current_month_days + next_month_days
+    # Query database for events in the given month
+    month_events = Event.objects.filter(
+        event_date__year=year,
+        event_date__month=month,
+    )
 
-    # Chunk into weeks
-    weeks = [calendar_days[i: i + 7] for i in range(0, len(calendar_days), 7)]
+    # Associate events with specific calendar dates
+    events_by_date = {}
+    for event in month_events:
+        date_key = event.event_date.strftime('%Y-%m-%d')
+        if date_key not in events_by_date:
+            events_by_date[date_key] = []
+        events_by_date[date_key].append(event)
 
-    # Calculate previous and next month
+    # Prepare navigation links
     previous_month = current_date - timedelta(days=1)
     next_month = current_date + timedelta(days=calendar.monthrange(year, month)[1])
 
+    # Weekdays
+    days_of_week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+    # Pass data to the template
     context = {
-        'weeks': weeks,
+        'calendar_dates': calendar_dates,
         'current_month': current_date.strftime('%B %Y'),
         'previous_month': f"?month={previous_month.month}&year={previous_month.year}",
         'next_month': f"?month={next_month.month}&year={next_month.year}",
+        'days_of_week': days_of_week,
+        'events_by_date': events_by_date,  # Key: date, Value: list of events
     }
 
     return render(request, 'crm/calendar.html', context)
+
 
 
 def event_list_json(request):  # New name

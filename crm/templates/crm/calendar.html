@@ -8,72 +8,99 @@
 </head>
 <body>
 {% extends 'base.html' %}
-
+{% load custom_filters %}
 {% block content %}
 <h1 class="text-center">Event Calendar</h1>
-<div class="calendar-navigation">
-    <a href="{{ previous_month }}">Previous Month</a>
-    <span>{{ current_month }}</span>
-    <a href="{{ next_month }}">Next Month</a>
-</div>
-
-<div class="calendar">
+<div class="calendar-container">
+    <!-- Calendar Header -->
     <div class="calendar-header">
-        {% for day in "Mon Tue Wed Thu Fri Sat Sun".split() %}
-        <div class="calendar-day-header">{{ day }}</div>
-        {% endfor %}
+        <h1>{{ current_month }}</h1>
+        <a href="{{ previous_month }}" class="btn">Previous</a>
+        <a href="{{ next_month }}" class="btn">Next</a>
     </div>
-    <div class="calendar-grid">
-        {% for week in weeks %}
-        {% for day in week %}
-        <div class="calendar-day{% if day is none %} empty{% endif %}">
-            {% if day %}
-            <span class="calendar-date">{{ day }}</span>
-            {% endif %}
-        </div>
+
+    <!-- Days of the Week -->
+    <div class="calendar">
+        {% for day in days_of_week %}
+        <div class="day-name">{{ day }}</div>
         {% endfor %}
+
+        <!-- Calendar Dates -->
+        {% for date in calendar_dates %}
+        <div class="day{% if date.month != current_month|date:"m" %} day--disabled{% endif %}">
+            <!-- Display Day Number -->
+            <span class="day-number">{{ date.day }}</span>
+
+            <!-- Event Container -->
+            <div class="event-container">
+                {% with date|date:"Y-m-d" as date_key %}
+                {% if events_by_date|get_item:date_key %}
+                    {% for event in events_by_date|get_item:date_key %}
+                    <div class="event" style="background-color: lightblue;">
+                        <a href="{% url 'event_detail' event.id %}">
+                            {{ event.name }}
+                        </a>
+                        <p>{{ event.start|date:"h:i A" }} - {{ event.end|date:"h:i A" }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- No Events Placeholder -->
+                    <div class="no-events">
+                        No events
+                    </div>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>
 
 <style>
-    .calendar-navigation {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-    .calendar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .calendar-header {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        text-align: center;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 150px);
-        grid-auto-rows: 150px;
-        gap: 1px;
-    }
-    .calendar-day {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #ddd;
-        background-color: #f9f9f9;
-    }
-    .calendar-day.empty {
-        background-color: #eee;
-    }
-    .calendar-date {
-        font-size: 18px;
-        font-weight: bold;
-    }
+    .calendar-container {
+    width: 90%;
+    margin: auto;
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 8px;
+}
+
+.day-name {
+    font-weight: bold;
+    text-align: center;
+    background: #f5f7fa;
+    padding: 8px;
+}
+
+.day {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 8px;
+    position: relative;
+    min-height: 100px;
+}
+
+.day--disabled {
+    background: #f9f9f9;
+    color: #bbb;
+}
+
+.event {
+    background: #007bff;
+    color: #fff;
+    padding: 4px 8px;
+    margin-top: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
 </style>
 {% endblock %}
 
